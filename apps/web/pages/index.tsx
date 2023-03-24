@@ -1,10 +1,6 @@
-import { Button } from "ui";
+import { Button } from "@/components/ui/Button";
+import NavigationMenu from "@/components/ui/NavigationMenu";
 
 export default function Web() {
-  return (
-    <div>
-      <h1>Web</h1>
-      <Button />
-    </div>
-  );
+  return <NavigationMenu />;
 }
