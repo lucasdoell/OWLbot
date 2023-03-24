@@ -15,6 +15,7 @@
       "cache": false
     },
     "deploy": {},
+    "delete": {},
     "start": {
       "dependsOn": ["^build"]
     }

@@ -11,6 +11,7 @@
     "dev": "dotenv -- turbo run dev",
     "start": "dotenv -- turbo run start",
     "deploy": "dotenv -- turbo run deploy",
+    "delete": "dotenv -- turbo run delete",
     "lint": "dotenv -- turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

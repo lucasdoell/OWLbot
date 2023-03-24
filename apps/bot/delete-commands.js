@@ -32,18 +32,17 @@ const rest = new REST({ version: "10" }).setToken(token);
       `Started refreshing ${commands.length} application (/) commands.`
     );
 
-    // The put method is used to fully refresh all global commands with the current set
-    // await rest.put(Routes.applicationCommands(clientId), { body: commands });
+    // // for global commands
+    // rest
+    //   .put(Routes.applicationCommands(clientId), { body: [] })
+    //   .then(() => console.log("Successfully deleted all application commands."))
+    //   .catch(console.error);
 
-    // The put method is used to fully refresh all commands in the guild with the current set
-    const data = await rest.put(
-      Routes.applicationGuildCommands(clientId, guildId),
-      { body: commands }
-    );
-
-    console.log(
-      `Successfully reloaded ${data.length} application (/) commands.`
-    );
+    // for guild-based commands
+    rest
+      .put(Routes.applicationGuildCommands(clientId, guildId), { body: [] })
+      .then(() => console.log("Successfully deleted all guild commands."))
+      .catch(console.error);
   } catch (error) {
     // And of course, make sure you catch and log any errors!
     console.error(error);
