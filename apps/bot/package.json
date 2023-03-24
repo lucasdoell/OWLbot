@@ -1,0 +1,19 @@
+{
+  "name": "bot",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "check": "tsc",
+    "dev": "node index.js",
+    "deploy": "dotenv -- node deploy-commands.js",
+    "delete": "dotenv -- node delete-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
+    "prettier": "^2.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.27.0"
+  }
+}
