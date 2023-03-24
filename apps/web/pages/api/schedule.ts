@@ -5,7 +5,6 @@ import puppeteer from "puppeteer-core";
 
 async function fetchPage(url: string) {
   const options =
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
     process.env.NODE_ENV === "production"
       ? {
           args: chrome.args,
