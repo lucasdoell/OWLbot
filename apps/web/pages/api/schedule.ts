@@ -1,26 +1,26 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import axios from "axios";
 import { JSDOM } from "jsdom";
 import chrome from "chrome-aws-lambda";
 import puppeteer from "puppeteer-core";
 
 async function fetchPage(url: string) {
-  // eslint-disable-next-line turbo/no-undeclared-env-vars
-  const options = process.env.AWS_REGION
-    ? {
-        args: chrome.args,
-        executablePath: await chrome.executablePath,
-        headless: chrome.headless,
-      }
-    : {
-        args: [],
-        executablePath:
-          process.platform === "win32"
-            ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-            : process.platform === "linux"
-            ? "/usr/bin/google-chrome"
-            : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-      };
+  const options =
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    process.env.NODE_ENV === "production"
+      ? {
+          args: chrome.args,
+          executablePath: await chrome.executablePath,
+          headless: chrome.headless,
+        }
+      : {
+          args: [],
+          executablePath:
+            process.platform === "win32"
+              ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+              : process.platform === "linux"
+              ? "/usr/bin/google-chrome"
+              : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        };
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
