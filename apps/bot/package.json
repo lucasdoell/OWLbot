@@ -5,6 +5,7 @@
   "scripts": {
     "check": "tsc",
     "dev": "node index.js",
+    "start": "node index.js",
     "deploy": "dotenv -- node deploy-commands.js",
     "delete": "dotenv -- node delete-commands.js"
   },
