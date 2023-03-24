@@ -16,6 +16,9 @@ build
 # bot
 apps/bot/dist
 
+# server
+apps/server/dist
+
 # misc
 .DS_Store
 *.pem
