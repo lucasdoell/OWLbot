@@ -33,8 +33,6 @@ app.get("/api/schedule", async (req, res) => {
 });
 
 async function fetchPage(url: string) {
-  console.log(chrome.args);
-
   const options =
     process.env.NODE_ENV === "production"
       ? {
@@ -73,7 +71,7 @@ function extractData(data: string) {
   );
 
   const matchDayRegex =
-    /\b(?:MON|TUE|WED|THU|FRI|SAT|SUN), (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEPOCT|NOV|DEC) d{1,2}\b/;
+    /\b(?:MON|TUE|WED|THU|FRI|SAT|SUN), (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) d{1,2}\b/;
 
   const matchTimeRegex = /\b(?:\d{1,2}:\d{2} [AP]M|Final)\b/;
 
