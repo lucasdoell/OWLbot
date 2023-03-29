@@ -36,13 +36,8 @@ async function fetchPage(url: string) {
   const options =
     process.env.NODE_ENV === "production"
       ? {
-          args: [
-            "--disable-gpu",
-            "--disable-dev-shm-usage",
-            "--disable-setuid-sandbox",
-            "--no-sandbox",
-          ],
-          executablePath: await chrome.executablePath,
+          args: chrome.args,
+          executablePath: { executablePath: "google-chrome-stable" },
           headless: chrome.headless,
         }
       : {
