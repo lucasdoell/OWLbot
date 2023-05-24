@@ -1,5 +1,4 @@
 import puppeteer from "puppeteer-core";
-import chrome from "chrome-aws-lambda";
 // import { JSDOM } from "jsdom";
 import chalk from "chalk";
 import express from "express";
@@ -34,22 +33,10 @@ app.get("/api/schedule", async (req, res) => {
 });
 
 async function fetchPage(url: string) {
-  const options =
-    process.env.NODE_ENV === "production"
-      ? {
-          args: chrome.args,
-          executablePath: await chrome.executablePath,
-          headless: chrome.headless,
-        }
-      : {
-          args: [],
-          executablePath:
-            process.platform === "win32"
-              ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-              : process.platform === "linux"
-              ? "/usr/bin/google-chrome"
-              : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-        };
+  const options = {
+    args: [],
+    executablePath: "/usr/bin/google-chrome",
+  };
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
