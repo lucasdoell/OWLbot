@@ -2,11 +2,14 @@ import puppeteer from "puppeteer-core";
 import chrome from "chrome-aws-lambda";
 import express from "express";
 import cron from "node-cron";
+import fs from "fs";
 import { warning, success, error, info } from "./consts";
 import { extractData } from "./extract";
 
 const app = express();
 const port = 8080;
+
+const cacheFilePath = `${__dirname}/cache/cache.json`;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -17,12 +20,18 @@ app.listen(port, () => {
 });
 
 // Run a cron job every day to update the schedule
-cron.schedule("0 0 * * *", () => {
+cron.schedule("0 0 * * *", async () => {
   console.log(info("Running cron job..."));
+  await cacheSchedule();
 });
 
 app.get("/api/schedule", async (req, res) => {
   const schedule = await getSchedule();
+  res.send(schedule);
+});
+
+app.get("/api/schedule/cache", async (req, res) => {
+  const schedule = await getScheduleFromCache();
   res.send(schedule);
 });
 
@@ -69,4 +78,24 @@ async function fetchPage(url: string) {
   await page.goto(url, { waitUntil: "networkidle2", timeout: 50000 });
   const extractedText = await page.$eval("*", (el: any) => el.innerText);
   return extractedText;
+}
+
+async function getScheduleFromCache() {
+  if (fs.existsSync(cacheFilePath)) {
+    const schedule = fs.readFileSync(cacheFilePath, "utf8");
+    console.log(info("Successfully retrieved schedule from cache"));
+    return schedule;
+  } else {
+    console.log(warning("Cache file not found, creating new cache..."));
+    await cacheSchedule();
+    const schedule = fs.readFileSync(cacheFilePath, "utf8");
+    return schedule;
+  }
+}
+
+async function cacheSchedule() {
+  console.log(info("Caching schedule..."));
+  const schedule = await getSchedule();
+  fs.writeFileSync(cacheFilePath, schedule);
+  console.log(success("Successfully cached schedule"));
 }
