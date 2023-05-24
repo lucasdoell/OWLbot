@@ -42,7 +42,7 @@ async function fetchPage(url: string) {
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
-  await page.goto(url, { waitUntil: "networkidle0" });
+  await page.goto(url, { waitUntil: "domcontentloaded" });
   return await page.content();
 }
 
