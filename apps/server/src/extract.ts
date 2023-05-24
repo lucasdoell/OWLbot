@@ -66,5 +66,7 @@ function printMatches(matches: Match[]): void {
 export function extractData(data: string) {
   const schedule = getFirstChunk(data);
   const matches = formatMatches(schedule);
+  const matchesJson = JSON.stringify(matches);
   printMatches(matches);
+  return matchesJson;
 }
