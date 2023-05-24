@@ -21,16 +21,21 @@ app.listen(port, () => {
 });
 
 app.get("/api/schedule", async (req, res) => {
-  console.log(warning("Accessing /api/schedule..."));
+  try {
+    console.log(warning("Accessing /api/schedule..."));
 
-  const document = await fetchPage(
-    "https://overwatchleague.com/en-us/schedule"
-  );
+    const document = await fetchPage(
+      "https://overwatchleague.com/en-us/schedule"
+    );
 
-  // const data = extractData(document);
+    // const data = extractData(document);
 
-  // res.send(`Schedule: ${data}`);
-  res.send(document);
+    // res.send(`Schedule: ${data}`);
+    res.send(document);
+  } catch (err) {
+    console.log(error("Error accessing /api/schedule"));
+    console.log(error(err));
+  }
 });
 
 async function fetchPage(url: string) {
@@ -42,7 +47,7 @@ async function fetchPage(url: string) {
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
-  await page.goto(url, { waitUntil: "domcontentloaded" });
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 50000 });
   return await page.content();
 }
 
