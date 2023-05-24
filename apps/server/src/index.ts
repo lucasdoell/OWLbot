@@ -39,8 +39,8 @@ async function getSchedule() {
     console.log(error(err));
     document = "error";
   }
-  extractData(document);
-  return document;
+
+  return extractData(document);
 }
 
 async function fetchPage(url: string) {
