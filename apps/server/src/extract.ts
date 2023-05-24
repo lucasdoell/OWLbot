@@ -21,8 +21,8 @@ function getFirstChunk(str: string): string {
 function getWeekNumber(str: string): number {
   const weekRegex = /(WEEK|Week) (\d+)/;
   const match = str.match(weekRegex);
-  if (match && match[1]) {
-    return parseInt(match[1], 10);
+  if (match && match[2]) {
+    return parseInt(match[2], 10);
   } else {
     throw new Error("No week number found in string");
   }
