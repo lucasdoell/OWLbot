@@ -19,7 +19,7 @@ function getFirstChunk(str: string): string {
 }
 
 function getWeekNumber(str: string): number {
-  const weekRegex = /Week (\d+)/;
+  const weekRegex = /(WEEK|Week) (\d+)/;
   const match = str.match(weekRegex);
   if (match && match[1]) {
     return parseInt(match[1], 10);
