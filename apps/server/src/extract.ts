@@ -29,7 +29,7 @@ function extractTimes(str: string): string[] {
 }
 
 function extractTeams(str: string): string[] {
-  const teamRegex = /(?<=(\n))([A-Z0-9]{3})(?=(\n))/g;
+  const teamRegex = /(?<=(\n))([A-Z0-9]{3})(?=(\n|$))/g;
   return extractMatches(str, teamRegex);
 }
 
