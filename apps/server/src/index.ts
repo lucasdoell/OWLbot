@@ -1,16 +1,11 @@
 import puppeteer from "puppeteer-core";
-// import { JSDOM } from "jsdom";
 import chrome from "chrome-aws-lambda";
-import chalk from "chalk";
 import express from "express";
+import cron from "node-cron";
+import { warning, success, error, info } from "./consts";
 
 const app = express();
 const port = 8080;
-
-// Output colors
-const warning = chalk.yellow;
-const success = chalk.greenBright;
-const error = chalk.redBright;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -20,7 +15,17 @@ app.listen(port, () => {
   console.log(success(`OWLbot server listening on port ${port}`));
 });
 
+// Run a cron job every day to update the schedule
+cron.schedule("0 0 * * *", () => {
+  console.log(info("Running cron job..."));
+});
+
 app.get("/api/schedule", async (req, res) => {
+  const schedule = await getSchedule();
+  res.send(schedule);
+});
+
+async function getSchedule() {
   try {
     console.log(warning("Accessing /api/schedule..."));
 
@@ -31,22 +36,35 @@ app.get("/api/schedule", async (req, res) => {
     // const data = extractData(document);
 
     // res.send(`Schedule: ${data}`);
-    res.send(document);
   } catch (err) {
     console.log(error("Error accessing /api/schedule"));
     console.log(error(err));
   }
-});
+  console.log(success("Successfully accessed /api/schedule"));
+}
 
 async function fetchPage(url: string) {
   const options = {
     args: chrome.args,
-    // args: ["--no-sandbox", "--disable-setuid-sandbox"],
     executablePath: "/usr/bin/google-chrome",
   };
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
+  await page.setRequestInterception(true);
+
+  page.on("request", (req) => {
+    if (
+      req.resourceType() == "stylesheet" ||
+      req.resourceType() == "font" ||
+      req.resourceType() == "image"
+    ) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
   await page.goto(url, { waitUntil: "networkidle2", timeout: 50000 });
   return await page.content();
 }

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "check": "tsc",
-    "build": "tsup src/index.ts",
+    "build": "tsup src/index.ts src/consts.ts",
     "dev": "node dist/index.js",
     "start": "dotenv -- node dist/index.js"
   },
@@ -15,6 +15,7 @@
     "dotenv-cli": "^7.1.0",
     "express": "^4.18.1",
     "jsdom": "^21.1.1",
+    "node-cron": "^3.0.2",
     "tsup": "^6.7.0"
   },
   "devDependencies": {
