@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer-core";
 // import { JSDOM } from "jsdom";
+import chrome from "chrome-aws-lambda";
 import chalk from "chalk";
 import express from "express";
 
@@ -34,7 +35,8 @@ app.get("/api/schedule", async (req, res) => {
 
 async function fetchPage(url: string) {
   const options = {
-    args: [],
+    args: chrome.args,
+    // args: ["--no-sandbox", "--disable-setuid-sandbox"],
     executablePath: "/usr/bin/google-chrome",
   };
 
