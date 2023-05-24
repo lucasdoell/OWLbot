@@ -9,7 +9,7 @@ import { extractData } from "./extract";
 const app = express();
 const port = 8080;
 
-const cacheFilePath = `${__dirname}/cache/cache.json`;
+const cacheFilePath = "cache.json";
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
