@@ -20,6 +20,10 @@ cron.schedule("0 0 * * *", () => {
   console.log(info("Running cron job..."));
 });
 
+cron.schedule("* * * * *", () => {
+  console.log(info("Test cron job"));
+});
+
 app.get("/api/schedule", async (req, res) => {
   const schedule = await getSchedule();
   res.send(schedule);
@@ -49,6 +53,7 @@ async function fetchPage(url: string) {
 
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
+  await page.emulateTimezone("America/New_York");
   await page.setRequestInterception(true);
 
   page.on("request", (req) => {
@@ -76,7 +81,10 @@ type Match = {
 
 function getFirstChunk(str: string): string {
   const chunks = str.split("\nWeek 5\n");
-  return chunks[0];
+  let firstChunk = chunks[0];
+  // Remove ENCORE lines
+  firstChunk = firstChunk.replace(/ENCORE: .*/g, "");
+  return firstChunk;
 }
 
 function extractMatches(str: string, regex: RegExp): string[] {
@@ -95,24 +103,24 @@ function extractTimes(str: string): string[] {
 }
 
 function extractTeams(str: string): string[] {
-  const teamRegex = /(?<=(\n))([A-Z]{3})(?=(\n))/g;
+  const teamRegex = /(?<=(\n))([A-Z0-9]{3})(?=(\n))/g;
   return extractMatches(str, teamRegex);
 }
 
 function formatMatches(schedule: string): Match[] {
-  const matches = schedule.split(/(?=\n\w{3}, \w{3} \d{2}\n)/);
+  const matches = schedule.split(/(?=\w{3}, \w{3} \d{2}\n)/g);
   const formattedMatches: Match[] = [];
 
   for (const match of matches) {
-    const date = extractDates(match)[0];
+    const date = extractDates(match);
     const time = extractTimes(match);
     const teams = extractTeams(match);
 
-    for (let i = 0; i < time.length; i++) {
+    for (let i = 0, j = 0; i < time.length; i++, j += 2) {
       formattedMatches.push({
-        date,
-        team1: teams[i * 2],
-        team2: teams[i * 2 + 1],
+        date: date[i],
+        team1: teams[j],
+        team2: teams[j + 1],
         time: time[i],
       });
     }
