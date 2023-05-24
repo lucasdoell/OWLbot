@@ -33,9 +33,7 @@ async function getSchedule() {
       "https://overwatchleague.com/en-us/schedule"
     );
 
-    // const data = extractData(document);
-
-    // res.send(`Schedule: ${data}`);
+    return document;
   } catch (err) {
     console.log(error("Error accessing /api/schedule"));
     console.log(error(err));
