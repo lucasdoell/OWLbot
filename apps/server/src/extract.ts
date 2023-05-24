@@ -18,15 +18,15 @@ function getFirstChunk(str: string): string {
   return firstChunk;
 }
 
-function getWeekNumber(str: string): number {
-  const weekRegex = /Week (\d+)/;
-  const match = str.match(weekRegex);
-  if (match && match[1]) {
-    return parseInt(match[1], 10);
-  } else {
-    throw new Error("No week number found in string");
-  }
-}
+// function getWeekNumber(str: string): number {
+//   const weekRegex = /Week (\d+)/;
+//   const match = str.match(weekRegex);
+//   if (match && match[1]) {
+//     return parseInt(match[1], 10);
+//   } else {
+//     throw new Error("No week number found in string");
+//   }
+// }
 
 function extractMatches(str: string, regex: RegExp): string[] {
   const matches = Array.from(str.matchAll(regex));
@@ -71,11 +71,12 @@ function formatMatches(schedule: string): Match[] {
 }
 
 function getWeekMatches(schedule: string): string {
-  const weekNumber = getWeekNumber(schedule);
+  // const weekNumber = getWeekNumber(schedule);
   const matches = formatMatches(schedule);
 
   const weekMatches: WeekMatches = {
-    week: `Week ${weekNumber}`,
+    // week: `Week ${weekNumber}`,
+    week: "Week 5",
     matches: matches,
   };
 
