@@ -5,12 +5,27 @@ type Match = {
   time: string;
 };
 
+type WeekMatches = {
+  week: string;
+  matches: Match[];
+};
+
 function getFirstChunk(str: string): string {
-  const chunks = str.split("\nWeek 5\n");
+  const chunks = str.split(/\nWeek \d+\n/);
   let firstChunk = chunks[0];
   // Remove ENCORE lines
   firstChunk = firstChunk.replace(/ENCORE: .*/g, "");
   return firstChunk;
+}
+
+function getWeekNumber(str: string): number {
+  const weekRegex = /Week (\d+)/;
+  const match = str.match(weekRegex);
+  if (match && match[1]) {
+    return parseInt(match[1], 10);
+  } else {
+    throw new Error("No week number found in string");
+  }
 }
 
 function extractMatches(str: string, regex: RegExp): string[] {
@@ -55,18 +70,20 @@ function formatMatches(schedule: string): Match[] {
   return formattedMatches;
 }
 
-function printMatches(matches: Match[]): void {
-  for (const match of matches) {
-    console.log(
-      `${match.date}\n${match.team1} vs. ${match.team2}\n${match.time}`
-    );
-  }
+function getWeekMatches(schedule: string): string {
+  const weekNumber = getWeekNumber(schedule);
+  const matches = formatMatches(schedule);
+
+  const weekMatches: WeekMatches = {
+    week: `Week ${weekNumber}`,
+    matches: matches,
+  };
+
+  return JSON.stringify(weekMatches, null, 2);
 }
 
 export function extractData(data: string) {
   const schedule = getFirstChunk(data);
-  const matches = formatMatches(schedule);
-  const matchesJson = JSON.stringify(matches);
-  printMatches(matches);
-  return matchesJson;
+  console.log(getWeekMatches(schedule));
+  return getWeekMatches(schedule);
 }
