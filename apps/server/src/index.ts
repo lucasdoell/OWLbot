@@ -67,7 +67,6 @@ async function fetchPage(url: string) {
   });
 
   await page.goto(url, { waitUntil: "networkidle2", timeout: 50000 });
-  const extractedText = await page.$eval("*", (el) => el.textContent);
-  console.log(extractedText);
-  return await page.content();
+  const extractedText = await page.$eval("*", (el: any) => el.innerText);
+  return extractedText;
 }
