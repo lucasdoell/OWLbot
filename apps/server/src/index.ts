@@ -33,12 +33,12 @@ async function getSchedule() {
       "https://overwatchleague.com/en-us/schedule"
     );
 
-    return document;
+    console.log(success("Successfully accessed /api/schedule"));
+    return extractData(document);
   } catch (err) {
     console.log(error("Error accessing /api/schedule"));
     console.log(error(err));
   }
-  console.log(success("Successfully accessed /api/schedule"));
 }
 
 async function fetchPage(url: string) {
@@ -67,30 +67,70 @@ async function fetchPage(url: string) {
   return await page.content();
 }
 
-// function extractData(data: string) {
-//   const dom = new JSDOM(data);
-//   const document = dom.window.document;
+type Match = {
+  date: string;
+  team1: string;
+  team2: string;
+  time: string;
+};
 
-//   let week = document.querySelector(
-//     ".schedule-boardstyles__Title-j4x5cc-4.iglKJd"
-//   );
+function getFirstChunk(str: string): string {
+  const chunks = str.split("\nWeek 5\n");
+  return chunks[0];
+}
 
-//   let schedule: HTMLElement[] = Array.from(
-//     document.querySelectorAll(
-//       ".schedule-boardstyles__ContainerCards-j4x5cc-8.jcvNlt"
-//     )
-//   );
+function extractMatches(str: string, regex: RegExp): string[] {
+  const matches = Array.from(str.matchAll(regex));
+  return matches.map((match) => match[0]);
+}
 
-//   const matchDayRegex =
-//     /\b(?:MON|TUE|WED|THU|FRI|SAT|SUN), (?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) d{1,2}\b/;
+function extractDates(str: string): string[] {
+  const dateRegex = /\w{3}, \w{3} \d{2}/g;
+  return extractMatches(str, dateRegex);
+}
 
-//   const matchTimeRegex = /\b(?:\d{1,2}:\d{2} [AP]M|Final)\b/;
+function extractTimes(str: string): string[] {
+  const timeRegex = /\d{1,2}:\d{2} (PM|AM)/g;
+  return extractMatches(str, timeRegex);
+}
 
-//   // For each item in schedule, get the match day and time
-//   const matches: string[] = [];
-//   for (let i = 0; i < schedule.length; i++) {
-//     matches.push(schedule[i].children[0].textContent!);
-//   }
+function extractTeams(str: string): string[] {
+  const teamRegex = /(?<=(\n))([A-Z]{3})(?=(\n))/g;
+  return extractMatches(str, teamRegex);
+}
 
-//   console.log(matches);
-// }
+function formatMatches(schedule: string): Match[] {
+  const matches = schedule.split(/(?=\n\w{3}, \w{3} \d{2}\n)/);
+  const formattedMatches: Match[] = [];
+
+  for (const match of matches) {
+    const date = extractDates(match)[0];
+    const time = extractTimes(match);
+    const teams = extractTeams(match);
+
+    for (let i = 0; i < time.length; i++) {
+      formattedMatches.push({
+        date,
+        team1: teams[i * 2],
+        team2: teams[i * 2 + 1],
+        time: time[i],
+      });
+    }
+  }
+
+  return formattedMatches;
+}
+
+function printMatches(matches: Match[]): void {
+  for (const match of matches) {
+    console.log(
+      `${match.date}\n${match.team1} vs. ${match.team2}\n${match.time}`
+    );
+  }
+}
+
+function extractData(data: string) {
+  const schedule = getFirstChunk(data);
+  const matches = formatMatches(schedule);
+  printMatches(matches);
+}
