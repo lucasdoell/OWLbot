@@ -1,3 +1,5 @@
+// Extraction types and functions for the schedule data
+
 type Match = {
   date: string;
   team1: string;
@@ -86,4 +88,128 @@ export function extractData(data: string) {
   const schedule = getFirstChunk(data);
   console.log(getWeekMatches(schedule, weekNum));
   return getWeekMatches(schedule, weekNum);
+}
+
+// Extraction types and functions for the roster data
+import { teams } from "./consts";
+import { load } from "cheerio";
+
+interface PlayerInfo {
+  id: string;
+  number: string;
+  name: string;
+  position: string;
+  joinDate: string;
+}
+
+interface TeamInfo {
+  teamName: string;
+  players: PlayerInfo[];
+}
+
+export function parseTeamName(input: string): string | undefined {
+  const lowerInput = input.toLowerCase();
+
+  // Check if input matches a team name exactly
+  const exactMatch = teams.find(
+    (team) => team.name.toLowerCase() === lowerInput
+  );
+  if (exactMatch) {
+    return exactMatch.name;
+  }
+
+  // Check if input matches a team abbreviation exactly
+  const abbreviationMatch = teams.find(
+    (team) => team.abbreviation.toLowerCase() === lowerInput
+  );
+  if (abbreviationMatch) {
+    return abbreviationMatch.name;
+  }
+
+  // Check if input matches any team aliases
+  const aliasMatch = teams.find((team) =>
+    team.aliases.some((alias) => alias.toLowerCase() === lowerInput)
+  );
+  if (aliasMatch) {
+    return aliasMatch.name;
+  }
+
+  // No match found
+  return undefined;
+}
+
+export function getTeamURL(teamName: string): string | undefined {
+  const lowerTeamName = teamName.toLowerCase();
+  const team = teams.find(
+    (team) =>
+      team.name.toLowerCase() === lowerTeamName ||
+      team.abbreviation.toLowerCase() === lowerTeamName ||
+      team.aliases.some((alias) => alias.toLowerCase() === lowerTeamName)
+  );
+  return team?.url;
+}
+
+export function extractRoster(
+  html: string,
+  teamName: string
+): TeamInfo | undefined {
+  const $ = load(html);
+
+  const players: PlayerInfo[] = [];
+
+  const rosterTable = $(
+    "table.wikitable.wikitable-striped.roster-card"
+  ).first();
+
+  if (!rosterTable.length) {
+    return undefined; // Return undefined if no table is found
+  }
+
+  const rows = rosterTable.find("tr.Player");
+
+  rows.each((_, row) => {
+    const id = $(row).find("td.ID a").attr("href")?.split("/").pop() || "";
+    const number = $(row)
+      .find("td.Number")
+      .text()
+      .trim()
+      .replace("Number:", "")
+      .trim();
+    const name = $(row)
+      .find("td.Name")
+      .text()
+      .trim()
+      .replace(/[\(\)]/g, "");
+    const position = $(row)
+      .find("td.Position")
+      .text()
+      .trim()
+      .replace("Position:", "")
+      .trim();
+    const joinDateRaw = $(row)
+      .find("td.Date")
+      .text()
+      .trim()
+      .replace("Join Date:", "");
+
+    const joinDateMatch = joinDateRaw.match(/\d{4}-\d{2}-\d{2}/);
+    const joinDate = joinDateMatch ? joinDateMatch[0] : "";
+
+    const playerInfo: PlayerInfo = {
+      id,
+      number,
+      name,
+      position,
+      joinDate,
+    };
+
+    players.push(playerInfo);
+  });
+
+  const teamInfo: TeamInfo = {
+    teamName,
+    players,
+  };
+
+  return teamInfo;
 }

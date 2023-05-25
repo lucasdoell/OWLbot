@@ -3,8 +3,14 @@ import chrome from "chrome-aws-lambda";
 import express from "express";
 import cron from "node-cron";
 import fs from "fs";
-import { warning, success, error, info } from "./consts";
-import { extractData } from "./extract";
+import { warning, success, error, info, teams } from "./consts";
+import {
+  extractData,
+  extractRoster,
+  getTeamURL,
+  parseTeamName,
+} from "./extract";
+import axios from "axios";
 
 const app = express();
 const port = 8080;
@@ -33,6 +39,18 @@ app.get("/api/schedule", async (req, res) => {
 app.get("/api/schedule/cache", async (req, res) => {
   const schedule = await getScheduleFromCache();
   res.send(schedule);
+});
+
+app.get("/api/roster", async (req, res) => {
+  if (req.query.team === undefined) {
+    res.send("Please specify a team.");
+  }
+  const team = decodeURI(req.query.team as string);
+  const roster = await getRoster(team);
+  if (roster === undefined) {
+    res.send("Could not find the team you are looking for.");
+  }
+  res.send(roster);
 });
 
 async function getSchedule() {
@@ -98,4 +116,22 @@ async function cacheSchedule() {
   const schedule = await getSchedule();
   fs.writeFileSync(cacheFilePath, schedule);
   console.log(success("Successfully cached schedule"));
+}
+
+async function getRoster(team: string) {
+  const teamName = parseTeamName(team);
+  if (teamName === undefined) {
+    console.log(error("Invalid team name: %s", team));
+    return undefined;
+  }
+
+  const teamURL = getTeamURL(teamName);
+
+  console.log(info(`Accessing roster for ${teamName}...`));
+
+  const document = await axios.get(
+    `https://liquipedia.net/overwatch/${teamURL}`
+  );
+
+  return extractRoster(document.data, teamName);
 }
