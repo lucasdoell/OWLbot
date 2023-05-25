@@ -22,7 +22,6 @@ module.exports = {
       )
       .setAuthor({
         name: "OWL Bot",
-        iconURL: "https://avatars.githubusercontent.com/u/55987186",
         url: "https://lux.dev",
       })
       .setDescription(

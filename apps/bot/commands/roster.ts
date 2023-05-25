@@ -44,7 +44,7 @@ module.exports = {
         url: "https://lux.dev",
       })
       .setFooter({
-        text: "Written by lux#5470 @lux_fps",
+        text: "Written by lux#5470",
         iconURL: "https://avatars.githubusercontent.com/u/55987186",
       })
       .setTimestamp();
