@@ -1,5 +1,5 @@
-const axios = require("axios");
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+import axios from "axios";
+import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,7 +22,7 @@ module.exports = {
       )
       .setAuthor({
         name: "OWL Bot",
-        iconUrl: "https://avatars.githubusercontent.com/u/55987186",
+        iconURL: "https://avatars.githubusercontent.com/u/55987186",
         url: "https://lux.dev",
       })
       .setDescription(
@@ -30,7 +30,7 @@ module.exports = {
       )
       .setFooter({
         text: "Written by lux#5470",
-        iconUrl: "https://avatars.githubusercontent.com/u/55987186",
+        iconURL: "https://avatars.githubusercontent.com/u/55987186",
       })
       .setTimestamp();
 

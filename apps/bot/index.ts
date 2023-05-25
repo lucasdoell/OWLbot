@@ -1,17 +1,23 @@
-const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-const dotenv = require("dotenv");
-const fs = require("node:fs");
-const path = require("node:path");
+import { Client, Collection, Events, GatewayIntentBits } from "discord.js";
+import dotenv from "dotenv";
+import fs from "node:fs";
+import path from "node:path";
+
+declare module "discord.js" {
+  export interface Client {
+    commands: Collection<any, any>;
+  }
+}
 
 dotenv.config();
-const token = process.env.DISCORD_TOKEN;
+const token = process.env.DISCORD_TOKEN as string;
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
 
-const commandsPath = path.join(__dirname, "commands");
+const commandsPath = path.join(__dirname, "dist");
 const commandFiles = fs
   .readdirSync(commandsPath)
   .filter((file) => file.endsWith(".js"));
@@ -53,7 +59,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
 client.once(Events.ClientReady, (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
-  client.user.setActivity("lux.dev");
+  client.user === null
+    ? console.log("Error: client is null")
+    : client.user.setActivity("lux.dev");
 });
 
 // Log in to Discord with your client's token
