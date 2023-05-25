@@ -48,7 +48,9 @@ app.get("/api/roster", async (req, res) => {
   const team = decodeURI(req.query.team as string);
   const roster = await getRoster(team);
   if (roster === undefined) {
-    res.send("Could not find the team you are looking for.");
+    res.send(
+      JSON.stringify({ error: "Could not find the team you are looking for." })
+    );
   }
   res.send(roster);
 });

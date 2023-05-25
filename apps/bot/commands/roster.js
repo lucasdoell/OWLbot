@@ -17,6 +17,15 @@ module.exports = {
         "team"
       )}`
     );
+
+    if (data.data.error) {
+      await interaction.reply({
+        content: data.data.error,
+        ephemeral: true,
+      });
+      return;
+    }
+
     const urlSafeTeamName = data.data.teamName.replace(/ /g, "_");
     const embed = new EmbedBuilder()
       .setColor(0x009dcf)
