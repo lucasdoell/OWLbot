@@ -1,6 +1,14 @@
-# Turborepo starter
+# OWL Bot
 
-This is an official npm starter turborepo.
+<p align="center">
+  <img src="https://owl.lux.dev/owlbot.png" alt="OWL Bot" width="200" />
+</p>
+
+![Website](https://img.shields.io/website?label=API%20Status&style=for-the-badge&labelColor=000&up_message=Operational&url=https%3A%2F%2Fowl-api.lux.dev)
+![Website](https://img.shields.io/website?style=for-the-badge&labelColor=000&up_message=Operational&url=https%3A%2F%2Fowl.lux.dev)
+[![GitHub followers](https://img.shields.io/github/followers/lucasdoell?logo=github&style=for-the-badge&labelColor=000)](https://github.com/lucasdoell)
+
+This is the repository for the OWL Bot, a Discord bot that provides information about the Overwatch League.
 
 ## What's inside?
 
@@ -8,13 +16,13 @@ This turborepo uses [npm](https://www.npmjs.com/) as a package manager. It inclu
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
+- `web`: a [Next.js](https://nextjs.org/) app
+- `bot`: a Discord bot powered by [discord.js](https://discord.js.org/)
+- `server`: an Express server that hosts the OWL API
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Each package/app is primarily [TypeScript](https://www.typescriptlang.org/). The Discord bot is written in JavaScript.
 
 ### Utilities
 
@@ -29,7 +37,7 @@ This turborepo has some additional tools already setup for you:
 To build all apps and packages, run the following command:
 
 ```
-cd my-turborepo
+cd owlbot
 npm run build
 ```
 
@@ -38,7 +46,7 @@ npm run build
 To develop all apps and packages, run the following command:
 
 ```
-cd my-turborepo
+cd owlbot
 npm run dev
 ```
 
@@ -49,7 +57,7 @@ Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo
 By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
 
 ```
-cd my-turborepo
+cd owlbot
 npx turbo login
 ```
 
