@@ -84,10 +84,10 @@ function getWeekMatches(schedule: string, weekNumber): string {
 }
 
 export function extractData(data: string) {
-  const weekNum = getWeekNumber(data);
+  // const weekNum = getWeekNumber(data);
   const schedule = getFirstChunk(data);
-  console.log(getWeekMatches(schedule, weekNum));
-  return getWeekMatches(schedule, weekNum);
+  // console.log(getWeekMatches(schedule, weekNum));
+  // return getWeekMatches(schedule, weekNum);
 }
 
 // Extraction types and functions for the roster data
