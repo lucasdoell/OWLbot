@@ -83,12 +83,23 @@ function getWeekMatches(schedule: string, weekNumber): string {
   return JSON.stringify(weekMatches, null, 2);
 }
 
+function getPostSeasonMatches(schedule: string): string {
+  const matches = formatMatches(schedule);
+
+  const postSeasonMatches: WeekMatches = {
+    week: "Post Season",
+    matches: matches,
+  };
+
+  return JSON.stringify(postSeasonMatches, null, 2);
+}
+
 export function extractData(data: string) {
   // const weekNum = getWeekNumber(data);
   const schedule = getFirstChunk(data);
   // console.log(getWeekMatches(schedule, weekNum));
   // return getWeekMatches(schedule, weekNum);
-  return schedule;
+  return getPostSeasonMatches(schedule);
 }
 
 // Extraction types and functions for the roster data
